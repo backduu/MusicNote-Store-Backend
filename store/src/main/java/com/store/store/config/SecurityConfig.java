@@ -42,7 +42,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Spring Security의 필터체인은 순차적으로 검사하므로 아래 순서를 지켜야 함.
                         // 1. 인증 없이 접근 가능한 경로
-                        .requestMatchers("/api/users/login","/api/users/signup").permitAll()
+                        .requestMatchers("/api/auth/login","/api/users/signup").permitAll()
                         .requestMatchers(
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
@@ -75,7 +75,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:8080"));
         //테스트용
         //configuration.setAllowedOrigins(List.of("*")); // 모든 Origin 허용
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
