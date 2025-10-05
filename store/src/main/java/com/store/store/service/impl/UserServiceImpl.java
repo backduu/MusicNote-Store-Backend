@@ -8,6 +8,8 @@ import com.store.store.repository.UserRepository;
 import com.store.store.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,21 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<UserDTO.Response> findAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable)
+                .map(userMapper::toResponse);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserDTO.Response findUser(String username) {
+        User user = userRepository.findByUsernameAndStatus(username, UserStatus.ACTIVE)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        return userMapper.toResponse(user);
+    }
 
     @Override
     @Transactional
