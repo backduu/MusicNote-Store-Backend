@@ -1,6 +1,10 @@
 package com.store.store.service;
 
+import com.store.store.domain.enums.UserRole;
+import com.store.store.domain.enums.UserStatus;
 import com.store.store.dto.UserDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.security.Principal;
 import java.util.List;
@@ -11,4 +15,12 @@ public interface UserService {
     UserDTO.Response signup(UserDTO.Request request);
 
     void withdraw(String username);
+
+    UserDTO.Response findUser(String username);
+
+    Page<UserDTO.Response> findAllUsers(Pageable pageable);
+
+    Page<UserDTO.Response> findUsersByStatus(UserStatus status, Pageable pageable);
+
+    Page<UserDTO.Response> findUsersByStatusAndRole(UserStatus status, UserRole role, Pageable pageable);
 }

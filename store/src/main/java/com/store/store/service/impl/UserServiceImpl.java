@@ -2,6 +2,7 @@ package com.store.store.service.impl;
 
 import com.store.store.component.UserMapper;
 import com.store.store.domain.entity.User;
+import com.store.store.domain.enums.UserRole;
 import com.store.store.domain.enums.UserStatus;
 import com.store.store.dto.UserDTO;
 import com.store.store.repository.UserRepository;
@@ -26,6 +27,18 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+
+    @Override
+    public Page<UserDTO.Response> findUsersByStatus(UserStatus status, Pageable pageable) {
+        return userRepository.findAllByStatus(status, pageable)
+                .map(userMapper::toResponse);
+    }
+
+    @Override
+    public Page<UserDTO.Response> findUsersByStatusAndRole(UserStatus status, UserRole role, Pageable pageable) {
+        return userRepository.findAllByStatusAndRole(status, role, pageable)
+                .map(userMapper::toResponse);
+    }
 
     @Override
     @Transactional(readOnly = true)
