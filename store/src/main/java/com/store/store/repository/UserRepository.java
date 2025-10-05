@@ -20,12 +20,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // 이메일 존재 여부 확인
     boolean existsByEmail(String email);
+
     // 닉네임 존재 여부 확인
     boolean existsByNickname(String nickname);
 
     // 상태 별 유저의 이메일이나 이름으로 확인
     List<User> findByStatusAndUsernameOrEmail(UserStatus status, String username, String email);
 
+    Optional<User> findByUsernameAndStatus(String username, UserStatus status);
 
     // 지정한 시각(dateTime) 이전에 마지막 로그인한 사용자 중, 주어진 상태(status)에 해당하는 사용자 목록 조회
     List<User> findByLastLoginBeforeAndStatus(LocalDateTime dateTime, UserStatus status);

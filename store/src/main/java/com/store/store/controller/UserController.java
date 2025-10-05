@@ -36,10 +36,9 @@ public class UserController {
     }
 
     @Operation(summary = "회원탈퇴", description = "회원탈퇴를 진행합니다. 탈퇴 시 상태는 'DELETED'가 됩니다.")
-    @PutMapping("/withdraw")
-    public ResponseEntity<String> withdraw(Principal principal, @RequestBody UserDTO.Request userDTO) {
-        //userService.withDraw(principal.getName(), userDTO);
-
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<String> withdraw(Principal principal) {
+        userService.withdraw(principal.getName());
         return ResponseEntity.ok("회원탈퇴가 완료되었습니다.");
     }
 }
