@@ -26,10 +26,10 @@ import java.util.List;
  * @since   2025-10-02
  * @description UserDetails를 구현한 User 엔티티.
  */
-// TODO 비밀번호 인증 / 인증만료에 대한 엔티티 추가?
+
+@Table(name = "users")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "users")
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
 @Getter
@@ -51,7 +51,7 @@ public class User implements UserDetails {
     @Column(nullable = false, length = 150)
     private String password;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = true, length = 50)
     private String nickname;
 
     @Column(nullable = false, unique = true, length = 100)

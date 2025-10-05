@@ -2,25 +2,37 @@ package com.store.store.service.impl;
 
 import com.store.store.component.UserMapper;
 import com.store.store.domain.entity.User;
+import com.store.store.domain.enums.UserStatus;
 import com.store.store.dto.UserDTO;
 import com.store.store.repository.UserRepository;
 import com.store.store.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service("userServiceImpl")
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+
+    @Override
+    @Transactional
+    public void withdraw(String username) {
+        User user = userRepository.findByUsernameAndStatus(username, UserStatus.ACTIVE)
+                                  .orElseThrow(() -> new IllegalArgumentException("존재하지 않거나 이미 탈퇴한 사용자입니다."));
+        user.deleted();
+        log.info("회원탈퇴 처리 완료: username={}", user.getUsername());
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -32,7 +44,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public UserDTO.Response signup(UserDTO.Request request) {
         User user = userMapper.toEntity(request, passwordEncoder);
         User saved = userRepository.save(user);
