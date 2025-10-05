@@ -21,7 +21,6 @@ import java.util.Map;
 
 @Service("loginServiceImpl")
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 @Slf4j
 public class LoginServiceImpl implements LoginService {
     private static final int MAX_LOGIN_ATTEMPTS = 5; // 최대 로그인 시도 횟수
@@ -31,6 +30,7 @@ public class LoginServiceImpl implements LoginService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
+    @Transactional
     public LoginDTO.Response login(LoginDTO.Request dto, HttpServletRequest request) {
         // 유저 존재 여부 확인
         User user = userRepository.findByUsername(dto.getUsername())

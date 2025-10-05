@@ -21,7 +21,6 @@ import java.util.Map;
 
 @Service("passwordServiceImpl")
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 @Slf4j
 public class PasswordServiceImpl implements PasswordService {
     private final UserRepository userRepository;
@@ -30,6 +29,7 @@ public class PasswordServiceImpl implements PasswordService {
     private final PasswordResetTokenRepository passwordResetTokenRepository;
 
     @Override
+    @Transactional
     public PasswordDTO.Response change(String username, PasswordDTO.ChangeRequest dto) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
@@ -55,6 +55,7 @@ public class PasswordServiceImpl implements PasswordService {
     }
 
     @Override
+    @Transactional
     public PasswordDTO.Response reset(PasswordDTO.ResetRequest dto, HttpServletRequest request) {
         User user = userRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));

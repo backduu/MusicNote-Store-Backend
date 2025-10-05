@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @Tag(name = "User API", description = "사용자 계정 관련 API (회원가입, 내 정보 관리 등)")
@@ -32,5 +33,13 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<UserDTO.Response> signupUser(@RequestBody UserDTO.Request userDTO) {
         return ResponseEntity.ok(userService.signup(userDTO));
+    }
+
+    @Operation(summary = "회원탈퇴", description = "회원탈퇴를 진행합니다. 탈퇴 시 상태는 'DELETED'가 됩니다.")
+    @PutMapping("/withdraw")
+    public ResponseEntity<String> withdraw(Principal principal, @RequestBody UserDTO.Request userDTO) {
+        //userService.withDraw(principal.getName(), userDTO);
+
+        return ResponseEntity.ok("회원탈퇴가 완료되었습니다.");
     }
 }

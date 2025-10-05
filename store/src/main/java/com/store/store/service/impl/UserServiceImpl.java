@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 
 @Service("userServiceImpl")
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -32,7 +31,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public UserDTO.Response signup(UserDTO.Request request) {
         User user = userMapper.toEntity(request, passwordEncoder);
         User saved = userRepository.save(user);
