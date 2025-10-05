@@ -14,6 +14,7 @@ import java.util.Map;
 public class JwtTokenProvider {
     private final SecretKey key;
     private final long validityInMilliseconds = 1000L * 60 * 60; // 1시간
+    private final long resetTokenValidity = 1000L * 60 * 30; // 30분
 
     public JwtTokenProvider() {
         // TODO 클라우드에 붙을 땐 비밀키 생성할 수 있게 만들기.
@@ -23,7 +24,8 @@ public class JwtTokenProvider {
 
     // 토큰 생성할 때 email을 subject로 설정
     // + 토큰에 role, nickname 사용자 정보 클레임에 넣기
-    public String createToken(String email, String role, String nickname, Map<String, Object> extraClaims) {
+    // + accessToken과 resetToken의 type 구분 넣기
+    public String createToken(String email, String role, String nickname,Map<String, Object> extraClaims) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + validityInMilliseconds);
 
@@ -37,8 +39,7 @@ public class JwtTokenProvider {
 
         claims.put("role", role);
         claims.put("nickname", nickname);
-
-
+        claims.put("type", "access_token");
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -47,6 +48,26 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
+
+    public String createResetToken(String email, Map<String, Object> extraClaims) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + resetTokenValidity); // 30분 유효
+
+        Claims claims = Jwts.claims().setSubject(email);
+        claims.put("type", "reset_token");
+
+        if (extraClaims != null && !extraClaims.isEmpty()) {
+            claims.putAll(extraClaims);
+        }
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
 
     // 토큰에서 Claims 전체 추출
     private Claims getClaimsFromToken(String token) {
@@ -72,6 +93,11 @@ public class JwtTokenProvider {
         return getClaimsFromToken(token).get("username", String.class);
     }
 
+    // 토큰 타입 추출
+    public String getTokenType(String token) {
+        return getClaimsFromToken(token).get("type", String.class);
+    }
+
     // 토큰 유효성 검증
     public boolean validateToken(String token) {
         try {
@@ -85,6 +111,31 @@ public class JwtTokenProvider {
         }
     }
 
+    // 리셋 토큰 검증
+    public boolean validateResetToken(String token, String expectedEmail) {
+        try {
+            Claims claims = getClaimsFromToken(token);
+            String email = claims.getSubject();
+            String type = claims.get("type", String.class);
+            Date expiration = claims.getExpiration();
 
+            return email.equals(expectedEmail)
+                    && "reset_token".equals(type)
+                    && expiration.after(new Date());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
+    // 토큰 만료 여부 확인
+    public boolean isTokenExpired(String token) {
+        try {
+            Date expiration = getClaimsFromToken(token).getExpiration();
+            return expiration.before(new Date());
+        } catch(Exception ex) {
+            return true; // 파싱 실패 시 만료된 것으로 함
+        }
+    }
 
 }
