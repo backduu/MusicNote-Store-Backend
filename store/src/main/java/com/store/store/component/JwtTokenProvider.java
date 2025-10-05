@@ -25,7 +25,7 @@ public class JwtTokenProvider {
     // 토큰 생성할 때 email을 subject로 설정
     // + 토큰에 role, nickname 사용자 정보 클레임에 넣기
     // + accessToken과 resetToken의 type 구분 넣기
-    public String createToken(String email, String role, String nickname,Map<String, Object> extraClaims) {
+    public String createToken(String email, String role, String nickname, String username, Map<String, Object> extraClaims) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + validityInMilliseconds);
 
@@ -37,8 +37,9 @@ public class JwtTokenProvider {
             claims.putAll(extraClaims);
         }
 
-        claims.put("role", role);
+        claims.put("role", "ROLE_" + role);
         claims.put("nickname", nickname);
+        claims.put("username", username);
         claims.put("type", "access_token");
 
         return Jwts.builder()

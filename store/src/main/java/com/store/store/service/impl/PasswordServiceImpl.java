@@ -24,11 +24,10 @@ import java.util.Map;
 @Transactional(readOnly = true)
 @Slf4j
 public class PasswordServiceImpl implements PasswordService {
-    UserRepository userRepository;
-    PasswordEncoder passwordEncoder;
-    PasswordResetToken passwordResetToken;
-    JwtTokenProvider  jwtTokenProvider;
-    PasswordResetTokenRepository passwordResetTokenRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider  jwtTokenProvider;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
 
     @Override
     public PasswordDTO.Response change(String username, PasswordDTO.ChangeRequest dto) {

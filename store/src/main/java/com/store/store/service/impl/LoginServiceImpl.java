@@ -86,7 +86,7 @@ public class LoginServiceImpl implements LoginService {
 
                     // JWT 발급
                     Map<String, Object> claims = Map.of("role", user.getRole().name());
-                    String token = jwtTokenProvider.createToken(user.getEmail(), user.getRole().name(), user.getNickname(), claims);
+                    String token = jwtTokenProvider.createToken(user.getEmail(), user.getRole().name(), user.getNickname(), user.getUsername(),  claims);
 
                     //TODO refresh Token 적용해보기
 
