@@ -48,3 +48,16 @@
 ---
 
 
+# 📂 폴더구조
+
+```
+src/main/java/com/store/store
+├── component/   # 컴포넌트 파일 및 도메인 별 DTO <-> Entity 변환 전담 mapper 클래스
+├── config/      # 전역 설정 (SecurityConfig, PasswordEncoderConfig)
+├── controller/  # REST API 엔드포인트, 요청/응답 처리
+├── domain/      # 엔티티, ENUMS 객체 (JPA Entity, Enum)
+├── dto/         # 데이터 전송 객체 (Request/Response DTO)
+├── exception/   # 예외 처리 클래스 (Custom Exception, Handler)
+├── repository/  # 데이터 접근 계층 (JPA Repository)
+└── service/     # 비즈니스 로직 계층
+```
