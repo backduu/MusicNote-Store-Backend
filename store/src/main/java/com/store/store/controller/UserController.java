@@ -16,7 +16,7 @@ import java.util.List;
 @Tag(name = "User API", description = "사용자 계정 관련 API (회원가입, 내 정보 관리 등)")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/users")
+@RequestMapping("/api/user")
 public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;

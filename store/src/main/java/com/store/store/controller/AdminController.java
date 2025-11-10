@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+// TODO 조건 별 종합 조회 api를 추가해서 조회 기능 개선해보기
 @Tag(name = "Admin API", description = "관리자 페이지 관련 (사용자 목록 조회'페이징처리',)")
 @RestController
 @RequestMapping("/api/admin")
@@ -77,4 +78,12 @@ public class AdminController {
         Pageable pageable = PageRequest.of(page, size, sort);
         return ResponseEntity.ok(userService.findUsersByStatusAndRole(status, role, pageable));
     }
+
+//    @PutMapping("/{username}/status")
+//    public ResponseEntity<UserDTO.Response> updateUserStatus(
+//        @PathVariable String username,
+//        @RequestParam UserStatus status
+//    ) {
+//        return ResponseEntity.ok(userService.updateStatus(username, status));
+//    }
 }

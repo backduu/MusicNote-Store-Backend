@@ -45,7 +45,7 @@ public class User implements UserDetails {
     @Column(nullable = false, length = 50)
     private String name;
 
-    @Column(nullable = false, unique = true, length = 11)
+    @Column(nullable = false, length = 11)
     private String phone;
 
     @Column(nullable = false, length = 150)
@@ -60,6 +60,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role;
+
+    @Column(nullable = true, length = 255)
+    private String address;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

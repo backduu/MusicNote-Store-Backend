@@ -3,6 +3,7 @@ package com.store.store.dto;
 import com.store.store.domain.entity.User;
 import com.store.store.domain.enums.UserRole;
 import com.store.store.domain.enums.UserStatus;
+import jakarta.persistence.Lob;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -39,6 +40,10 @@ public class UserDTO {
         @Email
         @Size(max = 100)
         private String email;
+
+        @NotBlank
+        @Size(max = 500)
+        private String address;
 
         @NotNull
         private UserRole role;

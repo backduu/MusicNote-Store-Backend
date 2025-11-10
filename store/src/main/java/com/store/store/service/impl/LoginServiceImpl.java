@@ -70,6 +70,7 @@ public class LoginServiceImpl implements LoginService {
                 case ACTIVE -> {
                     // 정상 로그인 시 비밀번호 일치 여부 체크
                     if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+                        log.debug("login failed - 비밀번호 불일치");
                         recordAttempt(user.getUsername(), false, "login failed - 비밀번호 불일치", request);
                         checkLoginAttempt(user); // 실패 횟수 체크
                         throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
