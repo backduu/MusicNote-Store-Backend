@@ -11,7 +11,7 @@
 
 | 구분              | 기술 스택                                                                 | 아이콘 |
 |-------------------|---------------------------------------------------------------------------|--------|
-| **Frontend**   | React, React Router, Axios, TailWIndV4         | ![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB) [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?style=flat&logo=tailwindcss&logoColor=white)]
+| **Frontend**   | React, React Router, Axios, TailWIndV4         | ![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB) ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?style=flat&logo=tailwindcss&logoColor=white)
 | **Backend**       | Java 17, Spring Boot 3, Spring Security 6, JPA(Hibernate), Oracle DB      | ![Java](https://img.shields.io/badge/Java-17-007396?style=flat&logo=openjdk&logoColor=white) ![Spring Boot](https://img.shields.io/badge/SpringBoot-6DB33F?style=flat&logo=springboot&logoColor=white) ![Spring Security](https://img.shields.io/badge/Spring%20Security-6DB33F?style=flat&logo=springsecurity&logoColor=white) ![Hibernate](https://img.shields.io/badge/Hibernate-59666C?style=flat&logo=hibernate&logoColor=white) ![Oracle](https://img.shields.io/badge/Oracle-F80000?style=flat&logo=oracle&logoColor=white) |
 | **Testing**       | JUnit5, Mockito                                                           | ![JUnit5](https://img.shields.io/badge/JUnit5-25A162?style=flat&logo=junit5&logoColor=white) ![Mockito](https://img.shields.io/badge/Mockito-25A162?style=flat&logo=java&logoColor=white) |
 | **Deployment**    | Docker, AWS EC2, AWS S3, AWS RDS(Oracle)                                  | ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white) ![AWS](https://img.shields.io/badge/AWS-232F3E?style=flat&logo=amazonaws&logoColor=white) |
@@ -29,7 +29,10 @@
 | 리뷰 & Q&A      | 구매자 리뷰 작성/조회, 상품별 질문/답변 |
 | AI 추천 챗봇    | 감정/날씨/장르 기반 음악 추천 (LangChain, 추후 개발) |
 | 관리자 기능     | 판매자 승인, 신고 처리, 카테고리/태그 관리, 팝업 관리 |
-
+| 라이선스 & 다운로드 | 결제 완료 시 디지털 상품 라이선스 발급, 다운로드 토큰(짧은 유효기간·횟수 제한) 발급, 환불 시 라이선스 무효화 |
+| 정산 관리 | 판매자/크리에이터 정산, 플랫폼 수수료 차감, 월별 정산 리포트, 환불 반영 |
+| 모니터링 & 보안 | 로깅/모니터링(Sentry, Grafana), 성능 점검(N+1 최적화, 인덱스, 캐싱), 보안 점검(Rate Limit, 입력값 검증, 비밀키 관리), 백업/복구 정책 |
+| 결제 연동 (실제 PG) | 토스페이/카카오페이 등 PG 연동, 결제 세션 생성, 웹훅 처리(결제 성공/실패 실시간 반영), 거래 로그 및 영수증 발급 |
 ---
 
 
