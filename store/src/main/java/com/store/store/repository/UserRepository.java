@@ -1,7 +1,10 @@
 package com.store.store.repository;
 
 import com.store.store.domain.entity.User;
+import com.store.store.domain.enums.UserRole;
 import com.store.store.domain.enums.UserStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -31,4 +34,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // 지정한 시각(dateTime) 이전에 마지막 로그인한 사용자 중, 주어진 상태(status)에 해당하는 사용자 목록 조회
     List<User> findByLastLoginBeforeAndStatus(LocalDateTime dateTime, UserStatus status);
+
+    // 상태 별 사용자 조회 페이징
+    Page<User> findAllByStatus(UserStatus status, Pageable pageable);
+
+    // 상태 및 역할 별 사용자 조회 페이징
+    Page<User> findAllByStatusAndRole(UserStatus status, UserRole role, Pageable pageable);
 }

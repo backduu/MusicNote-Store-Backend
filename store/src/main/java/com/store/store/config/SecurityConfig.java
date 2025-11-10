@@ -41,17 +41,18 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // Spring Security의 필터체인은 순차적으로 검사하므로 아래 순서를 지켜야 함.
+                        // 0. 구체적인 경로를 먼저 설정
+                        .requestMatchers("/api/auth/change").authenticated()
                         // 1. 인증 없이 접근 가능한 경로
-                        .requestMatchers("/api/auth/login","/api/users/signup", "/api/auth/reset", "/api/auth/forget").permitAll()
+                        .requestMatchers("/api/auth/**","/api/user/signup").permitAll()
                         .requestMatchers(
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
                         ).permitAll()
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/api/auth/change").authenticated()
                         // 2. 나머지 /api/users/**는 인증 필요
-                        .requestMatchers("/api/users/**").authenticated()
+                        .requestMatchers("/api/user/**").authenticated()
                         // 3. 관리자 전용
                         .requestMatchers("/api/admin/**").hasAnyRole("ADMIN")
                         // 에러 허용
@@ -76,7 +77,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:8080"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:8080", "http://127.0.0.1:5173"));
         //테스트용
         //configuration.setAllowedOrigins(List.of("*")); // 모든 Origin 허용
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));

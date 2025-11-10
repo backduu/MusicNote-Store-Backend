@@ -16,7 +16,7 @@ import java.util.List;
 @Tag(name = "User API", description = "사용자 계정 관련 API (회원가입, 내 정보 관리 등)")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/users")
+@RequestMapping("/api/user")
 public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
@@ -27,6 +27,12 @@ public class UserController {
         List<UserDTO.UpdateRequest> users = userService.getAllUsers();
 
         return ResponseEntity.ok().body(users);
+    }
+
+    @Operation(summary = "특정 유저 검색", description = "사용자 이름으로 정보를 조회합니다.")
+    @GetMapping("/{username}")
+    public ResponseEntity<UserDTO.Response> getUser(@PathVariable String username) {
+        return ResponseEntity.ok(userService.findUser(username));
     }
 
     @Operation(summary = "회원가입", description = "새로운 사용자를 등록합니다. 가입 시 상태는 'PENDING'이 됩니다.")
