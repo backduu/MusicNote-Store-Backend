@@ -43,6 +43,10 @@ public class Product {
     @Column(nullable = false, length = 20)
     private ProductType type;
 
+    // 제작자/아티스트/작곡가
+    @Column(nullable = false, length = 100)
+    private String creator;
+
     // 미리보기 URL (예: 악보 이미지, 음원 샘플)
     private String previewUrl;
 
