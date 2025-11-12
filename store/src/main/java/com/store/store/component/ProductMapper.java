@@ -1,6 +1,7 @@
 package com.store.store.component;
 
 import com.store.store.domain.entity.Product;
+import com.store.store.domain.entity.ProductTag;
 import com.store.store.domain.entity.Tag;
 import com.store.store.domain.entity.User;
 import com.store.store.domain.enums.ProductStatus;
@@ -26,8 +27,8 @@ public class ProductMapper {
                 .status(product.getStatus())
                 .sellerId(product.getSeller().getId())
                 .sellerName(product.getSeller().getName())
-                .tags(product.getTags().stream()
-                        .map(tag -> tag.getName())
+                .tags(product.getProductTags().stream()
+                        .map(tag -> tag.getTag().getName())
                         .collect(Collectors.toSet()))
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
@@ -36,7 +37,7 @@ public class ProductMapper {
 
     // DTO → Entity
     public static Product toEntity(ProductDTO.Request dto, User seller, Set<Tag> tags) {
-        return Product.builder()
+        Product product = Product.builder()
                 .title(dto.getTitle())
                 .description(dto.getDescription())
                 .price(dto.getPrice())
@@ -46,7 +47,15 @@ public class ProductMapper {
                 .filePath(dto.getFilePath())
                 .status(ProductStatus.ONSALE)
                 .seller(seller)
-                .tags(tags)
                 .build();
+
+        // product tag 생성
+        Set<ProductTag> productTags = tags.stream()
+                .map(tag -> new ProductTag(product, tag))
+                .collect(Collectors.toSet());
+
+        product.setProductTags(productTags);
+
+        return product;
     }
 }

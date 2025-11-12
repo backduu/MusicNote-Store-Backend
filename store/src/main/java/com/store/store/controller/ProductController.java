@@ -2,6 +2,7 @@ package com.store.store.controller;
 
 import com.store.store.dto.ProductDTO;
 import com.store.store.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +20,18 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
+    @Operation(summary = "캐루셀 음원 조회", description = "상품이 'ONSALE'인 상태의 금주에 나온 상품을 조회합니다.")
     @GetMapping("/carousel/new")
     public ResponseEntity<List<ProductDTO.Response>> getWeeklyNewProducts(
-        @RequestParam(defaultValue = "5") int limit
+        @RequestParam(defaultValue = "15") int limit
     ) {
         return ResponseEntity.ok(productService.findNewProductsForCarousel(limit));
     }
+
+    @GetMapping("/new")
+    @Operation(summary = "오늘 정식 발행된 상품 조회", description = "상품이 'ONSALE'인 상태의 오늘 출시된 상품을 조회합니다.")
+    public ResponseEntity<List<ProductDTO.Response>> getTodayNewProducts() {
+        return ResponseEntity.ok(productService.findTodayNewProducts());
+    }
+
 }

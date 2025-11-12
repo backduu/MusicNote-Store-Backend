@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Table(name="tags")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -18,4 +21,14 @@ public class Tag {
 
     @Column(nullable = false, unique = true, length = 50)
     private String name;
+
+    @Column(nullable = false, length = 250)
+    private String description;
+
+    @Column(nullable = false, length = 50)
+    private String type;
+
+    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ProductTag> productTags = new HashSet<>();
+
 }

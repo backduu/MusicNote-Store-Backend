@@ -6,5 +6,7 @@ import java.util.List;
 
 public interface ProductService {
     List<ProductDTO.Response> findNewProductsForCarousel(int limit);
+
+    List<ProductDTO.Response> findTodayNewProducts();
 }
 

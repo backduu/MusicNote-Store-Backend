@@ -63,14 +63,8 @@ public class Product {
     @JoinColumn(name = "seller_id", nullable = false)
     private User seller;
 
-    // 태그 (장르, 악기 등)
-    @ManyToMany
-    @JoinTable(
-            name = "product_tags",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    private Set<Tag> tags = new HashSet<>();
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ProductTag> productTags = new HashSet<>();
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -78,4 +72,22 @@ public class Product {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    // productTags 세팅 관련 메소드
+    // 개별 productTags를 추가
+    public void addProductTag(ProductTag tag) {
+        this.productTags.add(tag);
+        tag.setProduct(this);
+    }
+
+    // 전체 productTags 세트를 교체
+    public void setProductTags(Set<ProductTag> productTags) {
+        this.productTags.clear();
+        if (productTags != null) {
+            productTags.forEach(this::addProductTag);
+        }
+    }
+
+    public void removeTag(Tag tag) {
+        this.productTags.removeIf(pt -> pt.getTag().equals(tag));
+    }
 }
