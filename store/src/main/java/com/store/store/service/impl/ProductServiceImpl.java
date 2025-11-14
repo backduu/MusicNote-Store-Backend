@@ -6,6 +6,7 @@ import com.store.store.domain.entity.Cart;
 import com.store.store.domain.entity.CartItem;
 import com.store.store.domain.entity.Product;
 import com.store.store.domain.entity.User;
+import com.store.store.domain.enums.MetricType;
 import com.store.store.domain.enums.ProductStatus;
 import com.store.store.domain.enums.ProductType;
 import com.store.store.dto.CartDTO;
@@ -16,6 +17,7 @@ import com.store.store.repository.ProductRepository;
 import com.store.store.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,7 +55,7 @@ public class ProductServiceImpl implements ProductService {
 
         return products.stream()
                 .limit(limit)
-                .map(ProductMapper::toResponse)
+                .map(productMapper::toResponse)
                 .collect(Collectors.toList());
 
     }
@@ -69,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepository.findNewProducts(startOfDay, endOfDay, ProductStatus.ONSALE);
 
         return products.stream()
-                .map(ProductMapper::toResponse)
+                .map(productMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -158,6 +160,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     // 장바구니 내 전체 상품 제거
+    @Transactional
     public CartDTO.CartResponse clearCart(User user) {
         // 사용자 장바구니 조회
         Cart cart = cartRepository.findByUser(user)
@@ -169,4 +172,25 @@ public class ProductServiceImpl implements ProductService {
 
         return cartMapper.toCartResponse(cart);
     }
+
+    // 메트릭 타입 별 Top100 조회
+    @Transactional(readOnly = true)
+    public List<ProductDTO.Response> getTop100(String metricType, String period, int page, int size) {
+        MetricType type = MetricType.valueOf(metricType.toUpperCase());
+
+        // TODAY, MONTH, YEAR 별 실 기간 설정
+        LocalDateTime end = LocalDateTime.now();
+        LocalDateTime start;
+        switch (period.toUpperCase()) {
+            case "TODAY" -> start = end.toLocalDate().atStartOfDay();
+            case "WEEK" -> start = end.minusWeeks(1);
+            case "MONTH" -> start = end.minusMonths(1);
+            default -> start = LocalDateTime.MIN;
+        }
+        List<Product> products = productRepository.findTopProductsByMetricAndPeriod(ProductStatus.ONSALE, type, start, end, PageRequest.of(page, size));
+        return products.stream()
+                .map(productMapper::toResponse)
+                .toList();
+    }
+
 }

@@ -37,12 +37,15 @@ public class ProductDTO {
         private String description;
         private BigDecimal price;
         private ProductType type;
+        private String genre;
         private String creator;
         private String previewUrl;
         private String filePath;
         private ProductStatus status;
         private Long sellerId;
         private String sellerName;
+        private Long view;
+        private Long like;
         private Set<String> tags;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;

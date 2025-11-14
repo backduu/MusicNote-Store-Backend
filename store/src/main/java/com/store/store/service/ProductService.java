@@ -20,5 +20,7 @@ public interface ProductService {
     CartDTO.CartResponse removeItemFromCart(User user, Long itemId);
 
     CartDTO.CartResponse clearCart(User user);
+
+    List<ProductDTO.Response> getTop100(String metricType, String period, int page, int size);
 }
 

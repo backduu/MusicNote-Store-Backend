@@ -58,6 +58,10 @@ public class Product {
     @Column(nullable = false, length = 20)
     private ProductStatus status;
 
+    // 장르
+    @Column(nullable = true, length = 20)
+    private String genre;
+
     // 판매자 (User와 다대일 관계)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", nullable = false)

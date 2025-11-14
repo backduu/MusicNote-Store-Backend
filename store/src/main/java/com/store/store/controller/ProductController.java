@@ -34,6 +34,18 @@ public class ProductController {
         return ResponseEntity.ok(productService.findTodayNewProducts());
     }
 
+    @GetMapping("/top100")
+    @Operation(summary = "기간과 조회수/좋아요 기준 음악 TOP 100 조회", description = "상품이 'ONSALE'인 상태의 기간 및 metricType 별 TOP 100을 추려내어 조회합니다.")
+    public ResponseEntity<List<ProductDTO.Response>> getTop100(
+            @RequestParam(defaultValue = "VIEW") String metricType,
+            @RequestParam(defaultValue = "MONTH") String period,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int size
+    ) {
+        List<ProductDTO.Response> response = productService.getTop100(metricType, period, page, size);
+        return ResponseEntity.ok(response);
+    }
+    
     @PostMapping("/cart/items")
     @Operation(summary = "장바구니에 상품 추가", description = "상품을 장바구니에 담습니다.")
     public ResponseEntity<CartDTO.CartResponse> addCartItems(
