@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Component
 public class UserMapper {
     // 엔티티 → DTO 변환
-    public static UserDTO.UpdateRequest toUpdateRequest(User user) {
+    public UserDTO.UpdateRequest toUpdateRequest(User user) {
         return UserDTO.UpdateRequest.builder()
                 .id(user.getId())
                 .username(user.getUsername())

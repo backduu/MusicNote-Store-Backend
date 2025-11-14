@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
     public List<UserDTO.UpdateRequest> getAllUsers() {
 
         return userRepository.findAll().stream()
-                .map(UserMapper::toUpdateRequest)
+                .map(userMapper::toUpdateRequest)
                 .toList();
     }
 

@@ -34,6 +34,8 @@ public class ProductTag {
     @Column(nullable = false, length = 20)
     private MetricType metricType;
 
+    private Long value;
+
     public void setProduct(Product product) {
         this.product = product;
     }
