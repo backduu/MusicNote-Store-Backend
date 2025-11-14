@@ -1,15 +1,15 @@
 package com.store.store.controller;
 
+import com.store.store.domain.entity.User;
+import com.store.store.dto.CartDTO;
 import com.store.store.dto.ProductDTO;
 import com.store.store.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,4 +34,52 @@ public class ProductController {
         return ResponseEntity.ok(productService.findTodayNewProducts());
     }
 
+    @PostMapping("/cart/items")
+    @Operation(summary = "장바구니에 상품 추가", description = "상품을 장바구니에 담습니다.")
+    public ResponseEntity<CartDTO.CartResponse> addCartItems(
+            @RequestBody CartDTO.ItemRequest request
+            , @AuthenticationPrincipal User user
+    ) {
+        CartDTO.CartResponse response = productService.addItemToCart(user, request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/cart/myCart")
+    @Operation(summary = "내 장바구니 검색", description = "나의 장바구니를 조회합니다.")
+    public ResponseEntity<CartDTO.CartResponse> getCart(
+            @AuthenticationPrincipal User user
+    ) {
+        CartDTO.CartResponse response = productService.getCart(user);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/cart/items/{itemId}")
+    @Operation(summary = "내 장바구니의 상품 수량 변경", description = "나의 장바구니에 담긴 상품의 수량을 조정합니다.")
+    public ResponseEntity<CartDTO.CartResponse> updateCartItemQuantity(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long itemId,
+            @RequestBody CartDTO.ItemRequest request
+    ) {
+        CartDTO.CartResponse response = productService.updateItemQuantity(user, itemId, request);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/cart/items/{itemId}")
+    @Operation(summary = "내 장바구니의 상품 삭제", description = "나의 장바구니에 담긴 상품을 삭제합니다.")
+    public ResponseEntity<CartDTO.CartResponse> removeCartItem(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long itemId
+    ) {
+        CartDTO.CartResponse response = productService.removeItemFromCart(user, itemId);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/cart/items/clear")
+    @Operation(summary = "내 장바구니의 상품 전체 삭제", description = "나의 장바구니에 담긴 상품을 전체 삭제합니다.")
+    public ResponseEntity<CartDTO.CartResponse> clearCart(
+            @AuthenticationPrincipal User user
+    ) {
+        CartDTO.CartResponse response = productService.clearCart(user);
+        return ResponseEntity.ok(response);
+    }
 }
