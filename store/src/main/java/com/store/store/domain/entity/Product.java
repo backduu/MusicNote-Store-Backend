@@ -30,6 +30,9 @@ public class Product {
     @Column(nullable = false, length = 100)
     private String title;
 
+    @Column(nullable = true, length = 20)
+    private String country;
+
     // 상품 설명
     @Column(nullable = false, length = 2000)
     private String description;

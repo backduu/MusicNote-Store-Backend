@@ -1,6 +1,7 @@
 package com.store.store.service;
 
 import com.store.store.domain.entity.User;
+import com.store.store.domain.enums.ProductType;
 import com.store.store.dto.CartDTO;
 import com.store.store.dto.ProductDTO;
 
@@ -22,5 +23,10 @@ public interface ProductService {
     CartDTO.CartResponse clearCart(User user);
 
     List<ProductDTO.Response> getTop100(String metricType, String period, int page, int size);
+
+    List<String> getGenres();
+
+    List<ProductDTO.Response> getSongMarketProducts(ProductType type, String region, String period, String sort, String genre,
+                                                    int page, int size);
 }
 

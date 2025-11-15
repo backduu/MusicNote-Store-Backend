@@ -18,6 +18,8 @@ import com.store.store.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -76,6 +79,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     // 장바구니 아이템 추가
+    @Override
     @Transactional
     public CartDTO.CartResponse addItemToCart(User user, CartDTO.ItemRequest item) {
         // 사용자 장바구니 조회
@@ -110,7 +114,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     // 내 장바구니 검색
-    @Transactional
+    @Override
+    @Transactional(readOnly = true)
     public CartDTO.CartResponse getCart(User user) {
         // 장바구니가 없으면 빈 장바구니를 내놓기
         Cart cart = cartRepository.findByUser(user)
@@ -120,6 +125,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     // 내 장바구니 수량 조정
+    @Override
     @Transactional
     public CartDTO.CartResponse updateItemQuantity(User user, Long itemId, CartDTO.ItemRequest request) {
         // 사용자 장바구니 조회
@@ -140,6 +146,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     // 장바구니 내 상품 제거
+    @Override
     @Transactional
     public CartDTO.CartResponse removeItemFromCart(User user, Long itemId) {
         // 사용자 장바구니 조회
@@ -160,6 +167,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     // 장바구니 내 전체 상품 제거
+    @Override
     @Transactional
     public CartDTO.CartResponse clearCart(User user) {
         // 사용자 장바구니 조회
@@ -174,6 +182,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     // 메트릭 타입 별 Top100 조회
+    @Override
     @Transactional(readOnly = true)
     public List<ProductDTO.Response> getTop100(String metricType, String period, int page, int size) {
         MetricType type = MetricType.valueOf(metricType.toUpperCase());
@@ -193,4 +202,45 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<String> getGenres() {
+        return productRepository.findDistinctGenres();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductDTO.Response> getSongMarketProducts(
+            ProductType type, String region, String period, String sort, String genre,
+            int page, int size) {
+        LocalDateTime end = LocalDateTime.now();
+        LocalDateTime start;
+        switch (period.toUpperCase()) {
+            case "TODAY" -> start = end.toLocalDate().atStartOfDay();
+            case "WEEK" -> start = end.minusWeeks(1);
+            case "MONTH" -> start = end.minusMonths(1);
+            case "YEAR" -> start = end.minusYears(1);
+            default -> start = LocalDateTime.MIN;
+        }
+        Pageable pageable = PageRequest.of(page, size);
+
+        List<Product> products;
+        if (sort.equalsIgnoreCase("LIKE")) {
+            products = productRepository.findSongMarketProductsByMetric(
+                    ProductStatus.ONSALE, type, region, genre, start, end, MetricType.LIKE, pageable
+            );
+        } else if (sort.equalsIgnoreCase("VIEW")) {
+            products = productRepository.findSongMarketProductsByMetric(
+                    ProductStatus.ONSALE, type, region, genre, start, end,
+                    MetricType.VIEW, pageable
+            );
+        }else {
+            products = productRepository.findSongMarketProductsByReleased(
+                    ProductStatus.ONSALE, type, region, genre, start, end, pageable);
+        }
+
+        return products.stream()
+                .map(productMapper::toResponse)
+                .toList();
+    }
 }
