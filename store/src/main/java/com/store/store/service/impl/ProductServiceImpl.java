@@ -212,7 +212,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public List<ProductDTO.Response> getSongMarketProducts(
             ProductType type, String region, String period, String sort, String genre,
-            int page, int size) {
+            int page, int size, String searchTerm) {
         LocalDateTime end = LocalDateTime.now();
         LocalDateTime start;
         switch (period.toUpperCase()) {
@@ -227,16 +227,16 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products;
         if (sort.equalsIgnoreCase("LIKE")) {
             products = productRepository.findSongMarketProductsByMetric(
-                    ProductStatus.ONSALE, type, region, genre, start, end, MetricType.LIKE, pageable
+                    ProductStatus.ONSALE, type, region, genre, start, end, MetricType.LIKE, pageable, searchTerm
             );
         } else if (sort.equalsIgnoreCase("VIEW")) {
             products = productRepository.findSongMarketProductsByMetric(
                     ProductStatus.ONSALE, type, region, genre, start, end,
-                    MetricType.VIEW, pageable
+                    MetricType.VIEW, pageable, searchTerm
             );
         }else {
             products = productRepository.findSongMarketProductsByReleased(
-                    ProductStatus.ONSALE, type, region, genre, start, end, pageable);
+                    ProductStatus.ONSALE, type, region, genre, start, end, pageable, searchTerm);
         }
 
         return products.stream()

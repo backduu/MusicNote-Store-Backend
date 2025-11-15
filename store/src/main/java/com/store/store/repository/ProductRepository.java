@@ -58,6 +58,12 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
           AND (:genre IS NULL OR p.genre = :genre)
           AND p.createdAt BETWEEN :start AND :end
           AND pt.metricType = :metricType
+          AND (:searchTerm IS NULL
+                OR
+                    LOWER(p.title) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+                OR
+                    LOWER(p.creator) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+              )
         ORDER BY pt.value DESC
     """)
     List<Product> findSongMarketProductsByMetric(
@@ -68,7 +74,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end,
             @Param("metricType") MetricType metricType,
-            Pageable pageable
+            Pageable pageable,
+            @Param("searchTerm") String searchTerm
     );
 
     @Query("""
@@ -79,10 +86,16 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
           AND (:genre IS NULL OR p.genre = :genre)
           AND p.createdAt BETWEEN :start AND :end
           AND (
-              (:region = 'Korea' AND p.country = 'Korea')
+                (:region = 'Korea' AND p.country = 'Korea')
               OR
-              (:region = 'FOREIGN' OR p.country <> 'Korea')
+                (:region = 'FOREIGN' OR p.country <> 'Korea')
           )
+          AND (:searchTerm IS NULL
+              OR
+                  LOWER(p.title) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+              OR
+                  LOWER(p.creator) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+              )
         ORDER BY p.createdAt DESC
     """)
     List<Product> findSongMarketProductsByReleased(
@@ -92,7 +105,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
             @Param("genre") String genre,
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end,
-            Pageable pageable
+            Pageable pageable,
+            @Param("searchTerm") String searchTerm
     );
 
 }

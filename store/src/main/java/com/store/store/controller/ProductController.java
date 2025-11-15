@@ -56,9 +56,10 @@ public class ProductController {
             @RequestParam(defaultValue = "RELEASED") String sort,
             @RequestParam(required = false) String genre,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "15") int size
+            @RequestParam(defaultValue = "15") int size,
+            @RequestParam(defaultValue = "") String searchTerm
     ) {
-        List<ProductDTO.Response> response = productService.getSongMarketProducts(type, region, period, sort, genre, page, size);
+        List<ProductDTO.Response> response = productService.getSongMarketProducts(type, region, period, sort, genre, page, size, searchTerm);
         return ResponseEntity.ok(response);
     }
     @PostMapping("/cart/items")

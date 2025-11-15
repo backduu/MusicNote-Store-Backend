@@ -27,6 +27,6 @@ public interface ProductService {
     List<String> getGenres();
 
     List<ProductDTO.Response> getSongMarketProducts(ProductType type, String region, String period, String sort, String genre,
-                                                    int page, int size);
+                                                    int page, int size, String searchTerm);
 }
 
