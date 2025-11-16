@@ -1,6 +1,7 @@
 package com.store.store.service;
 
 import com.store.store.domain.entity.User;
+import com.store.store.domain.enums.Difficulty;
 import com.store.store.domain.enums.ProductType;
 import com.store.store.dto.CartDTO;
 import com.store.store.dto.ProductDTO;
@@ -28,5 +29,8 @@ public interface ProductService {
 
     List<ProductDTO.Response> getSongMarketProducts(ProductType type, String region, String period, String sort, String genre,
                                                     int page, int size, String searchTerm);
+
+    List<ProductDTO.Response> getSheetArchive(ProductType type, String region, String period, String sort, String genre, int page, int size
+                                            , String searchTerm, String instrument, Difficulty difficulty, String era);
 }
 

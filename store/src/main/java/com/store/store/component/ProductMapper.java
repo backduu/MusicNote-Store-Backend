@@ -43,6 +43,8 @@ public class ProductMapper {
                 .creator(product.getCreator())
                 .previewUrl(product.getPreviewUrl())
                 .genre(product.getGenre())
+                .difficulty(product.getSheet().getDifficulty())
+                .instrument(product.getSheet().getInstrument())
                 .like(likeValue)
                 .view(viewValue)
                 .tags(tagNames)
