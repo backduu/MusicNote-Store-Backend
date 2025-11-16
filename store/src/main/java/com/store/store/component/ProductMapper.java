@@ -1,9 +1,6 @@
 package com.store.store.component;
 
-import com.store.store.domain.entity.Product;
-import com.store.store.domain.entity.ProductTag;
-import com.store.store.domain.entity.Tag;
-import com.store.store.domain.entity.User;
+import com.store.store.domain.entity.*;
 import com.store.store.domain.enums.MetricType;
 import com.store.store.domain.enums.ProductStatus;
 import com.store.store.dto.ProductDTO;
@@ -33,6 +30,7 @@ public class ProductMapper {
                 .findFirst()
                 .orElse(0L);
 
+        Sheet sheet = product.getSheet();
 
         return ProductDTO.Response.builder()
                 .id(product.getId())
@@ -43,8 +41,8 @@ public class ProductMapper {
                 .creator(product.getCreator())
                 .previewUrl(product.getPreviewUrl())
                 .genre(product.getGenre())
-                .difficulty(product.getSheet().getDifficulty())
-                .instrument(product.getSheet().getInstrument())
+                .difficulty(sheet != null ? product.getSheet().getDifficulty() : null)
+                .instrument(sheet != null ? product.getSheet().getInstrument() : null)
                 .like(likeValue)
                 .view(viewValue)
                 .tags(tagNames)
