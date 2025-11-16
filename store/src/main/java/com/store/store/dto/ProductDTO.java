@@ -1,5 +1,6 @@
 package com.store.store.dto;
 
+import com.store.store.domain.enums.Difficulty;
 import com.store.store.domain.enums.ProductStatus;
 import com.store.store.domain.enums.ProductType;
 import lombok.AllArgsConstructor;
@@ -46,6 +47,8 @@ public class ProductDTO {
         private String sellerName;
         private Long view;
         private Long like;
+        private Difficulty difficulty;
+        private String instrument;
         private Set<String> tags;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;

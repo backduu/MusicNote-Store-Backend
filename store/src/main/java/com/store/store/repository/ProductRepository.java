@@ -1,6 +1,7 @@
 package com.store.store.repository;
 
 import com.store.store.domain.entity.Product;
+import com.store.store.domain.enums.Difficulty;
 import com.store.store.domain.enums.MetricType;
 import com.store.store.domain.enums.ProductStatus;
 import com.store.store.domain.enums.ProductType;
@@ -109,4 +110,70 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
             @Param("searchTerm") String searchTerm
     );
 
+    @Query("""
+    SELECT p
+    FROM Product p
+    JOIN ProductTag pt ON pt.product = p
+    JOIN Sheet s ON s.product = p              
+    WHERE p.status = :status
+      AND p.type = :type
+      AND (:region = 'Korea' AND p.country = 'Korea'
+           OR :region = 'FOREIGN' AND p.country <> 'Korea')
+      AND (:genre IS NULL OR p.genre = :genre)
+      AND (:instrument IS NULL OR s.instrument = :instrument) 
+      AND (:difficulty IS NULL OR s.difficulty = :difficulty) 
+      AND (:era IS NULL OR s.era = :era)                     
+      AND p.createdAt BETWEEN :start AND :end
+      AND pt.metricType = :metricType
+      AND (:searchTerm IS NULL
+           OR LOWER(p.title) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+           OR LOWER(p.creator) LIKE LOWER(CONCAT('%', :searchTerm, '%')))
+    ORDER BY pt.value DESC
+""")
+    List<Product> findSheetArchiveByMetric(
+            @Param("status") ProductStatus status,
+            @Param("type") ProductType type,
+            @Param("region") String region,
+            @Param("genre") String genre,
+            @Param("instrument") String instrument,
+            @Param("difficulty") Difficulty difficulty,
+            @Param("era") String era,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end,
+            @Param("metricType") MetricType metricType,
+            @Param("searchTerm") String searchTerm,
+            Pageable pageable
+    );
+
+    @Query("""
+    SELECT p
+    FROM Product p
+    JOIN Sheet s ON s.product = p
+    WHERE p.status = :status
+      AND p.type = :type
+      AND (:region = 'Korea' AND p.country = 'Korea'
+           OR :region = 'FOREIGN' AND p.country <> 'Korea')
+      AND (:genre IS NULL OR p.genre = :genre)
+      AND (:instrument IS NULL OR s.instrument = :instrument)
+      AND (:difficulty IS NULL OR s.difficulty = :difficulty)
+      AND (:era IS NULL OR s.era = :era)
+      AND p.createdAt BETWEEN :start AND :end
+      AND (:searchTerm IS NULL
+           OR LOWER(p.title) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+           OR LOWER(p.creator) LIKE LOWER(CONCAT('%', :searchTerm, '%')))
+    ORDER BY p.createdAt DESC
+""")
+    List<Product> findSheetArchiveByReleased(
+            @Param("status") ProductStatus status,
+            @Param("type") ProductType type,
+            @Param("region") String region,
+            @Param("genre") String genre,
+            @Param("instrument") String instrument,
+            @Param("difficulty") Difficulty difficulty,
+            @Param("era") String era,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end,
+            @Param("searchTerm") String searchTerm,
+            Pageable pageable
+    );
 }
