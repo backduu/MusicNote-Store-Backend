@@ -1,6 +1,7 @@
 package com.store.store.controller;
 
 import com.store.store.domain.entity.User;
+import com.store.store.domain.enums.ProductType;
 import com.store.store.dto.CartDTO;
 import com.store.store.dto.ProductDTO;
 import com.store.store.service.ProductService;
@@ -45,7 +46,22 @@ public class ProductController {
         List<ProductDTO.Response> response = productService.getTop100(metricType, period, page, size);
         return ResponseEntity.ok(response);
     }
-    
+
+    @GetMapping("/songMarket")
+    @Operation(summary = "음원/음반 조회", description = "기간/타입/국가/정렬/장르 별 'ONSALE'인 상품을 추려내어 조회합니다.")
+    public ResponseEntity<List<ProductDTO.Response>> getSongMarket(
+            @RequestParam(defaultValue = "SONG") ProductType type,
+            @RequestParam(defaultValue = "Korea") String region,
+            @RequestParam(defaultValue = "MONTH") String period,
+            @RequestParam(defaultValue = "RELEASED") String sort,
+            @RequestParam(required = false) String genre,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int size,
+            @RequestParam(defaultValue = "") String searchTerm
+    ) {
+        List<ProductDTO.Response> response = productService.getSongMarketProducts(type, region, period, sort, genre, page, size, searchTerm);
+        return ResponseEntity.ok(response);
+    }
     @PostMapping("/cart/items")
     @Operation(summary = "장바구니에 상품 추가", description = "상품을 장바구니에 담습니다.")
     public ResponseEntity<CartDTO.CartResponse> addCartItems(
@@ -93,5 +109,11 @@ public class ProductController {
     ) {
         CartDTO.CartResponse response = productService.clearCart(user);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/genres")
+    public ResponseEntity<List<String>> getGenres(){
+        List<String> genres = productService.getGenres();
+        return ResponseEntity.ok(genres);
     }
 }

@@ -18,7 +18,11 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
             "WHERE p.createdAt BETWEEN :start AND :end " +
             "AND p.status = :status " +
             "ORDER BY p.createdAt DESC ")
-    List<Product> findNewProducts(LocalDateTime start, LocalDateTime end, ProductStatus status);
+    List<Product> findNewProducts(
+            LocalDateTime start,
+            LocalDateTime end,
+            ProductStatus status
+    );
 
     @Query("""
             SELECT p
@@ -36,4 +40,73 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
             @Param("end") LocalDateTime end,
             Pageable pageable
     );
+
+    @Query("""
+        SELECT DISTINCT p.genre
+        FROM Product p
+        WHERE p.genre IS NOT NULL
+    """)
+    List<String> findDistinctGenres();
+
+    @Query("""
+        SELECT p
+        FROM Product p
+        JOIN ProductTag pt ON pt.product = p
+        WHERE p.status = :status
+          AND (:type = 'ALL' OR p.type = :type)
+          AND (:region IS NULL OR p.country = :region)
+          AND (:genre IS NULL OR p.genre = :genre)
+          AND p.createdAt BETWEEN :start AND :end
+          AND pt.metricType = :metricType
+          AND (:searchTerm IS NULL
+                OR
+                    LOWER(p.title) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+                OR
+                    LOWER(p.creator) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+              )
+        ORDER BY pt.value DESC
+    """)
+    List<Product> findSongMarketProductsByMetric(
+            @Param("status") ProductStatus status,
+            @Param("type") ProductType type,
+            @Param("region") String region,
+            @Param("genre") String genre,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end,
+            @Param("metricType") MetricType metricType,
+            Pageable pageable,
+            @Param("searchTerm") String searchTerm
+    );
+
+    @Query("""
+        SELECT p
+        FROM Product p
+        WHERE p.status = :status
+          AND (p.type = :type)
+          AND (:genre IS NULL OR p.genre = :genre)
+          AND p.createdAt BETWEEN :start AND :end
+          AND (
+                (:region = 'Korea' AND p.country = 'Korea')
+              OR
+                (:region = 'FOREIGN' OR p.country <> 'Korea')
+          )
+          AND (:searchTerm IS NULL
+              OR
+                  LOWER(p.title) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+              OR
+                  LOWER(p.creator) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+              )
+        ORDER BY p.createdAt DESC
+    """)
+    List<Product> findSongMarketProductsByReleased(
+            @Param("status") ProductStatus status,
+            @Param("type") ProductType type,
+            @Param("region") String region,
+            @Param("genre") String genre,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end,
+            Pageable pageable,
+            @Param("searchTerm") String searchTerm
+    );
+
 }
